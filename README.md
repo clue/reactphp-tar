@@ -5,7 +5,7 @@ built on top of [React PHP](http://reactphp.org/).
 
 Implements UStar (Uniform Standard Tape ARchive) format, introduced by the POSIX IEEE P1003.1
 
-> Note: This project is in early alpha stage! Feel free to report any issues you encounter.
+> Note: This project is in beta stage! Feel free to report any issues you encounter.
 
 ## Quickstart example
 
@@ -42,7 +42,7 @@ The recommended way to install this library is [through composer](https://getcom
 ```JSON
 {
     "require": {
-        "clue/tar-react": "dev-master"
+        "clue/tar-react": "~0.1.0"
     }
 }
 ```
