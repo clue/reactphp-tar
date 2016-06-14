@@ -5,6 +5,12 @@ built on top of [React PHP](http://reactphp.org/).
 
 Implements UStar (Uniform Standard Tape ARchive) format, introduced by the POSIX IEEE P1003.1
 
+**Table of Contents**
+
+* [Quickstart example](#quickstart-example)
+* [Install](#install)
+* [License](#license)
+
 > Note: This project is in beta stage! Feel free to report any issues you encounter.
 
 ## Quickstart example
