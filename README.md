@@ -10,6 +10,7 @@ Implements UStar (Uniform Standard Tape ARchive) format, introduced by the POSIX
 * [Quickstart example](#quickstart-example)
 * [Install](#install)
 * [License](#license)
+* [More](#more)
 
 > Note: This project is in beta stage! Feel free to report any issues you encounter.
 
@@ -56,3 +57,12 @@ The recommended way to install this library is [through composer](https://getcom
 ## License
 
 MIT
+
+## More
+
+* If you want to learn more about processing streams of data, refer to the documentation of
+  the underlying [react/stream](https://github.com/reactphp/stream) component.
+
+* If you want to process compressed tarballs (`.tar.gz` and `.tgz` file extension), you may
+  want to use [clue/zlib-react](https://github.com/clue/php-zlib-react) on the compressed
+  input stream before passing the decompressed stream to the tar decoder.
