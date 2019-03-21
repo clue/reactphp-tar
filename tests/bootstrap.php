@@ -53,25 +53,7 @@ class TestCase extends PHPUnit_Framework_TestCase
      */
     protected function createCallableMock()
     {
-        return $this->getMock('CallableStub');
-    }
-
-    protected function expectPromiseResolve($promise)
-    {
-        $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
-
-        $promise->then($this->expectCallableOnce(), $this->expectCallableNever());
-
-        return $promise;
-    }
-
-    protected function expectPromiseReject($promise)
-    {
-        $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
-
-        $promise->then($this->expectCallableNever(), $this->expectCallableOnce());
-
-        return $promise;
+        return $this->createMock('CallableStub');
     }
 }
 

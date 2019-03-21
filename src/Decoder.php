@@ -2,17 +2,18 @@
 
 namespace Clue\React\Tar;
 
-use React\Stream\WritableStream;
-use React\Stream\ReadableStream;
-use RuntimeException;
+use Evenement\EventEmitter;
 use Exception;
+use React\Stream\ThroughStream;
+use React\Stream\WritableStreamInterface;
+use RuntimeException;
 
 /**
- * @event entry(array $header, ReadableStream $stream, Decoder $thisDecoder)
+ * @event entry(array $header, \React\Stream\ReadableStreamInterface $stream, Decoder $thisDecoder)
  * @event error(Exception $e, Decoder $thisDecoder)
  * @event close()
  */
-class Decoder extends WritableStream
+class Decoder extends EventEmitter implements WritableStreamInterface
 {
     private $buffer = '';
     private $writable = true;
@@ -83,7 +84,7 @@ class Decoder extends WritableStream
                 return;
             }
 
-            $this->streaming = new ReadableStream();
+            $this->streaming = new ThroughStream();
             $this->remaining = $header['size'];
             $this->padding   = $header['padding'];
 
@@ -199,7 +200,7 @@ class Decoder extends WritableStream
         $record = unpack($this->format, $header);
 
         // we only support "ustar" format (for now?)
-        if ($record['magic'] !== 'ustar') {
+        if (rtrim($record['magic']) !== 'ustar') {
             throw new RuntimeException('Unsupported archive type, expected "ustar", but found "' . $record['magic'] . '"');
         }
 

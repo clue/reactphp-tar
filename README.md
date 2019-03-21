@@ -21,14 +21,14 @@ tar stream into the `Decoder` which emits "entry" events for each individual fil
 
 ```php
 $loop = React\EventLoop\Factory::create();
-$stream = new Stream(fopen('archive.tar', 'r'), $loop);
+$stream = new ReadableResourceStream(fopen('archive.tar', 'r'), $loop);
 
 $decoder = new Decoder();
 
 $decoder->on('entry', function ($header, ReadableStreamInterface $file) {
     echo 'File ' . $header['filename'];
     echo ' (' . $header['size'] . ' bytes):' . PHP_EOL;
-    
+
     $file->on('data', function ($chunk) {
         echo $chunk;
     });
