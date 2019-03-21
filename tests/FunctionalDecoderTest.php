@@ -4,7 +4,7 @@ namespace Clue\Tests\React\Tar;
 
 use Clue\React\Tar\Decoder;
 use React\EventLoop\StreamSelectLoop;
-use React\Stream\Stream;
+use React\Stream\ReadableResourceStream;
 
 class FunctionDecoderTest extends TestCase
 {
@@ -33,10 +33,8 @@ class FunctionDecoderTest extends TestCase
      */
     public function testAliceBobWithSmallBufferSize()
     {
-        $stream = $this->createStream('alice-bob.tar');
-
         // a tiny buffer size will emit *lots* of individual chunks, but the parser should work as expected
-        $stream->bufferSize = 11;
+        $stream = $this->createStream('alice-bob.tar', 11);
 
         $stream->pipe($this->decoder);
 
@@ -80,8 +78,8 @@ class FunctionDecoderTest extends TestCase
         $this->decoder->end(file_get_contents(__DIR__ . '/fixtures/single-empty.tar'));
     }
 
-    private function createStream($name)
+    private function createStream($name, $readChunkSize = null)
     {
-        return new Stream(fopen(__DIR__ . '/fixtures/' . $name, 'r'), $this->loop);
+        return new ReadableResourceStream(fopen(__DIR__ . '/fixtures/' . $name, 'r'), $this->loop, $readChunkSize);
     }
 }

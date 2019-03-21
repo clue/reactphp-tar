@@ -1,11 +1,10 @@
 <?php
 
-use React\Stream\Stream;
-use React\EventLoop\Factory;
-use Clue\React\Tar\Decoder;
-use React\Stream\BufferedSink;
 use Clue\Hexdump\Hexdump;
+use Clue\React\Tar\Decoder;
 use React\EventLoop\StreamSelectLoop;
+use React\Stream\ReadableResourceStream;
+use React\Promise\Stream;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -16,7 +15,7 @@ echo 'Reading file "' . $in . '" (pass as argument to example)' . PHP_EOL;
 //$loop = Factory::create();
 $loop = new StreamSelectLoop();
 
-$stream = new Stream(fopen($in, 'r'), $loop);
+$stream = new ReadableResourceStream(fopen($in, 'r'), $loop);
 
 $decoder = new Decoder();
 $decoder->on('entry', function ($header, $file) {
@@ -27,11 +26,13 @@ $decoder->on('entry', function ($header, $file) {
     echo 'Received entry headers:' . PHP_EOL;
     var_dump($header);
 
-    BufferedSink::createPromise($file)->then(function ($contents) {
+    Stream\buffer($file)->then(function ($contents) {
         echo 'Received entry contents (' . strlen($contents) . ' bytes)' . PHP_EOL;
 
         $d = new Hexdump();
         echo $d->dump($contents) . PHP_EOL . PHP_EOL;
+    }, function ($error) {
+        echo 'ERROR: ' . $error . PHP_EOL;
     });
 });
 $decoder->on('error', function ($error) {

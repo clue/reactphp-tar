@@ -2,10 +2,11 @@
 
 namespace Clue\React\Tar;
 
-use React\Stream\WritableStream;
-use React\Stream\ReadableStream;
-use RuntimeException;
+use Evenement\EventEmitter;
 use Exception;
+use React\Stream\ThroughStream;
+use React\Stream\WritableStreamInterface;
+use RuntimeException;
 
 /**
  * Decodes a TAR stream and emits "entry" events for each individual file in the archive.
@@ -14,11 +15,11 @@ use Exception;
  * introduced by POSIX IEEE P1003.1. In the future, it should support more of
  * the less common alternative formats.
  *
- * @event entry(array $header, ReadableStream $stream, Decoder $thisDecoder)
+ * @event entry(array $header, \React\Stream\ReadableStreamInterface $stream, Decoder $thisDecoder)
  * @event error(Exception $e, Decoder $thisDecoder)
  * @event close()
  */
-class Decoder extends WritableStream
+class Decoder extends EventEmitter implements WritableStreamInterface
 {
     private $buffer = '';
     private $writable = true;
@@ -89,7 +90,7 @@ class Decoder extends WritableStream
                 return;
             }
 
-            $this->streaming = new ReadableStream();
+            $this->streaming = new ThroughStream();
             $this->remaining = $header['size'];
             $this->padding   = $header['padding'];
 
