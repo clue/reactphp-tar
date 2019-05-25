@@ -200,7 +200,7 @@ class Decoder extends EventEmitter implements WritableStreamInterface
         $record = unpack($this->format, $header);
 
         // we only support "ustar" format (for now?)
-        if (rtrim($record['magic']) !== 'ustar') {
+        if ($record['magic'] !== 'ustar') {
             throw new RuntimeException('Unsupported archive type, expected "ustar", but found "' . $record['magic'] . '"');
         }
 
