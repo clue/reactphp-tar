@@ -4,6 +4,7 @@ use Clue\Hexdump\Hexdump;
 use Clue\React\Tar\Decoder;
 use React\EventLoop\StreamSelectLoop;
 use React\Stream\ReadableResourceStream;
+use React\Promise\Stream;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -25,11 +26,13 @@ $decoder->on('entry', function ($header, $file) {
     echo 'Received entry headers:' . PHP_EOL;
     var_dump($header);
 
-    $file->on('data', function ($contents) {
+    Stream\buffer($file)->then(function ($contents) {
         echo 'Received entry contents (' . strlen($contents) . ' bytes)' . PHP_EOL;
 
         $d = new Hexdump();
         echo $d->dump($contents) . PHP_EOL . PHP_EOL;
+    }, function ($error) {
+        echo 'ERROR: ' . $error . PHP_EOL;
     });
 });
 $decoder->on('error', function ($error) {

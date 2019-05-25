@@ -17,7 +17,8 @@
     "require-dev": {
         "react/event-loop": "^1",
         "clue/hexdump": "~0.2.0",
-        "phpunit/phpunit": "~5"
+        "phpunit/phpunit": "~5",
+        "react/promise-stream": "^1"
     },
     "autoload": {
         "psr-4": { "Clue\\React\\Tar\\": "src/" }
