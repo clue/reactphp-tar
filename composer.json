@@ -18,9 +18,12 @@
         "clue/hexdump": "~0.2.0",
         "react/event-loop": "~0.4.0|~0.3.0",
         "react/promise": "~2.0|~1.0",
-        "phpunit/phpunit": "^4.8.35"
+        "phpunit/phpunit": "^7.0 || ^6.0 || ^5.0 || ^4.8.35"
     },
     "autoload": {
         "psr-4": { "Clue\\React\\Tar\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Clue\\Tests\\React\\Tar\\": "tests/" }
     }
 }
