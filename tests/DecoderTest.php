@@ -1,5 +1,7 @@
 <?php
 
+namespace Clue\Tests\React\Tar;
+
 use Clue\React\Tar\Decoder;
 
 class DecoderTest extends TestCase
@@ -27,6 +29,9 @@ class DecoderTest extends TestCase
         $this->decoder->write(str_repeat('2', 1024));
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testWritingToClosedDecoderDoesNothing()
     {
         $this->decoder->close();

@@ -1,5 +1,7 @@
 <?php
 
+namespace Clue\Tests\React\Tar;
+
 use Clue\React\Tar\Decoder;
 use React\EventLoop\StreamSelectLoop;
 use React\Stream\Stream;
@@ -14,6 +16,9 @@ class FunctionDecoderTest extends TestCase
         $this->loop = new StreamSelectLoop();
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testAliceBob()
     {
         $stream = $this->createStream('alice-bob.tar');
@@ -23,6 +28,9 @@ class FunctionDecoderTest extends TestCase
         $this->loop->run();
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testAliceBobWithSmallBufferSize()
     {
         $stream = $this->createStream('alice-bob.tar');
