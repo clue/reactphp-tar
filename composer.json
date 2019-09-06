@@ -1,7 +1,7 @@
 {
     "name": "clue/tar-react",
-    "description": "Async, streaming parser for the TAR file format (Tape ARchive), built on top of React PHP",
-    "keywords": ["tar", "archive", "parser", "decoder", "extractor", "unpacker", "ReactPHP", "async"],
+    "description": "Streaming parser to extract tarballs with ReactPHP.",
+    "keywords": ["tar", "archive", "tarball", "untar", "parser", "decoder", "extract", "unpack", "ReactPHP", "async"],
     "homepage": "https://github.com/clue/php-tar-react",
     "license": "MIT",
     "authors": [

@@ -8,6 +8,12 @@ use RuntimeException;
 use Exception;
 
 /**
+ * Decodes a TAR stream and emits "entry" events for each individual file in the archive.
+ *
+ * At the moment, this class implements the the `UStar` (Uniform Standard Tape ARchive) format,
+ * introduced by POSIX IEEE P1003.1. In the future, it should support more of
+ * the less common alternative formats.
+ *
  * @event entry(array $header, ReadableStream $stream, Decoder $thisDecoder)
  * @event error(Exception $e, Decoder $thisDecoder)
  * @event close()
