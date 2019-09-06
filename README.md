@@ -1,9 +1,12 @@
-# clue/tar-react [![Build Status](https://travis-ci.org/clue/php-tar-react.svg?branch=master)](https://travis-ci.org/clue/php-tar-react)
+# clue/reactphp-tar [![Build Status](https://travis-ci.org/clue/reactphp-tar.svg?branch=master)](https://travis-ci.org/clue/reactphp-tar)
 
-Async, streaming parser for the [TAR file format](https://en.wikipedia.org/wiki/Tar_%28computing%29) (Tape ARchive),
-built on top of [React PHP](http://reactphp.org/).
+Streaming parser to extract tarballs with [ReactPHP](https://reactphp.org/).
 
-Implements UStar (Uniform Standard Tape ARchive) format, introduced by the POSIX IEEE P1003.1
+The [TAR file format](https://en.wikipedia.org/wiki/Tar_%28computing%29) is a
+common archive format to store several files in a single archive file (commonly
+referred to as "tarball" with a `.tar` extension). This lightweight library
+provides an efficient implementation to extract tarballs in a streaming fashion,
+processing one chunk at a time in memory without having to rely on disk I/O.
 
 **Table of Contents**
 
@@ -44,8 +47,8 @@ See also the [examples](examples).
 
 ## Install
 
-The recommended way to install this library is [through composer](https://getcomposer.org).
-[New to composer?](https://getcomposer.org/doc/00-intro.md)
+The recommended way to install this library is [through Composer](https://getcomposer.org).
+[New to Composer?](https://getcomposer.org/doc/00-intro.md)
 
 ```JSON
 {
@@ -84,5 +87,5 @@ MIT
   the underlying [react/stream](https://github.com/reactphp/stream) component.
 
 * If you want to process compressed tarballs (`.tar.gz` and `.tgz` file extension), you may
-  want to use [clue/zlib-react](https://github.com/clue/php-zlib-react) on the compressed
+  want to use [clue/reactphp-zlib](https://github.com/clue/reactphp-zlib) on the compressed
   input stream before passing the decompressed stream to the tar decoder.
