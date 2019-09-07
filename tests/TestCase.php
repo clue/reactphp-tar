@@ -14,6 +14,17 @@ class TestCase extends \PHPUnit\Framework\TestCase
         return $mock;
     }
 
+    protected function expectCallableOnceWith($value)
+    {
+        $mock = $this->createCallableMock();
+        $mock
+            ->expects($this->once())
+            ->method('__invoke')
+            ->with($value);
+
+        return $mock;
+    }
+
     protected function expectCallableNever()
     {
         $mock = $this->createCallableMock();

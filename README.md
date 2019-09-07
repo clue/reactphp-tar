@@ -29,7 +29,7 @@ $stream = new ReadableResourceStream(fopen('archive.tar', 'r'), $loop);
 
 $decoder = new Decoder();
 
-$decoder->on('entry', function ($header, ReadableStreamInterface $file) {
+$decoder->on('entry', function (array $header, React\Stream\ReadableStreamInterface $file) {
     echo 'File ' . $header['filename'];
     echo ' (' . $header['size'] . ' bytes):' . PHP_EOL;
 

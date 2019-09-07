@@ -3,7 +3,7 @@
 namespace Clue\Tests\React\Tar;
 
 use Clue\React\Tar\Decoder;
-use React\EventLoop\StreamSelectLoop;
+use React\EventLoop\Factory;
 use React\Stream\ReadableResourceStream;
 
 class FunctionDecoderTest extends TestCase
@@ -13,7 +13,7 @@ class FunctionDecoderTest extends TestCase
     public function setUp()
     {
         $this->decoder = new Decoder();
-        $this->loop = new StreamSelectLoop();
+        $this->loop = Factory::create();
     }
 
     /**

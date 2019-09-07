@@ -3,7 +3,6 @@
 namespace Clue\React\Tar;
 
 use Evenement\EventEmitter;
-use Exception;
 use React\Stream\ThroughStream;
 use React\Stream\WritableStreamInterface;
 use RuntimeException;
@@ -15,8 +14,8 @@ use RuntimeException;
  * introduced by POSIX IEEE P1003.1. In the future, it should support more of
  * the less common alternative formats.
  *
- * @event entry(array $header, \React\Stream\ReadableStreamInterface $stream, Decoder $thisDecoder)
- * @event error(Exception $e, Decoder $thisDecoder)
+ * @event entry(array $header, \React\Stream\ReadableStreamInterface $stream)
+ * @event error(Exception $e)
  * @event close()
  */
 class Decoder extends EventEmitter implements WritableStreamInterface
@@ -37,14 +36,14 @@ class Decoder extends EventEmitter implements WritableStreamInterface
 
         if (PHP_VERSION < 5.5) {
             // PHP 5.5 replaced 'a' with 'Z' (read X bytes and removing trailing NULL bytes)
-            $this->format = str_replace('Z', 'a', $this->format);
+            $this->format = str_replace('Z', 'a', $this->format); // @codeCoverageIgnore
         }
     }
 
     public function write($data)
     {
         if (!$this->writable) {
-            return;
+            return false;
         }
 
         // incomplete entry => read until end of entry before expecting next header
@@ -53,7 +52,7 @@ class Decoder extends EventEmitter implements WritableStreamInterface
 
             // entry still incomplete => wait for next chunk
             if ($this->streaming !== null) {
-                return;
+                return true;
             }
         }
 
@@ -63,7 +62,7 @@ class Decoder extends EventEmitter implements WritableStreamInterface
 
             // padding still remaining => wait for next chunk
             if ($this->padding !== 0) {
-                return;
+                return true;
             }
         }
 
@@ -80,24 +79,24 @@ class Decoder extends EventEmitter implements WritableStreamInterface
             }
             try {
                 $header = $this->readHeader($header);
-            } catch (Exception $e) {
+            } catch (RuntimeException $e) {
                 // clean up before throwing
                 $this->buffer = '';
                 $this->writable = false;
 
-                $this->emit('error', array($e, $this));
+                $this->emit('error', array($e));
                 $this->close();
-                return;
+                return false;
             }
 
             $this->streaming = new ThroughStream();
             $this->remaining = $header['size'];
             $this->padding   = $header['padding'];
 
-            $this->emit('entry', array($header, $this->streaming, $this));
+            $this->emit('entry', array($header, $this->streaming));
 
             if ($this->remaining === 0) {
-                $this->streaming->close();
+                $this->streaming->end();
                 $this->streaming = null;
             } else {
                 $this->buffer = $this->consumeEntry($this->buffer);
@@ -105,7 +104,7 @@ class Decoder extends EventEmitter implements WritableStreamInterface
 
             // incomplete entry => do not read next header
             if ($this->streaming !== null) {
-                return;
+                return true;
             }
 
             if ($this->padding !== 0) {
@@ -114,15 +113,33 @@ class Decoder extends EventEmitter implements WritableStreamInterface
 
             // incomplete padding => do not read next header
             if ($this->padding !== 0) {
-                return;
+                return true;
             }
         }
+
+        return true;
     }
 
     public function end($data = null)
     {
         if ($data !== null) {
             $this->write($data);
+        }
+
+        if ($this->streaming !== null) {
+            // input stream ended but we were still streaming an entry => emit error about incomplete entry
+            $this->streaming->emit('error', array(new \RuntimeException('TAR input stream ended unexpectedly')));
+            $this->streaming->close();
+            $this->streaming = null;
+
+            // add some dummy data to also trigger error on decoder stream
+            $this->buffer = '.';
+        }
+
+        if ($this->buffer !== '') {
+            // incomplete entry in buffer
+            $this->emit('error', array(new \RuntimeException('Stream ended with incomplete entry')));
+            $this->buffer = '';
         }
 
         $this->writable = false;
@@ -137,25 +154,18 @@ class Decoder extends EventEmitter implements WritableStreamInterface
 
         $this->closing = true;
         $this->writable = false;
+        $this->buffer = '';
 
         if ($this->streaming !== null) {
-            // input stream ended but we were still streaming an entry => emit error about incomplete entry
-            $this->streaming->emit('error', array());
+            // input stream ended but we were still streaming an entry => forcefully close without error
             $this->streaming->close();
             $this->streaming = null;
-
-            $this->emit('error', array());
-        }
-
-        if ($this->buffer !== '') {
-            // incomplete entry in buffer
-            $this->emit('error', array());
-            $this->buffer = '';
         }
 
         // ignore whether we're still expecting NUL-padding
 
-        $this->emit('close', array($this));
+        $this->emit('close');
+        $this->removeAllListeners();
     }
 
     public function isWritable()
@@ -174,11 +184,11 @@ class Decoder extends EventEmitter implements WritableStreamInterface
         $this->remaining -= $len;
 
         // emit chunk of data
-        $this->streaming->emit('data', array($data, $this->streaming));
+        $this->streaming->write($data);
 
         // nothing remaining => entry stream finished
         if ($this->remaining === 0) {
-            $this->streaming->close();
+            $this->streaming->end();
             $this->streaming = null;
         }
 
