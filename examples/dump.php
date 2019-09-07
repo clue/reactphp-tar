@@ -1,33 +1,32 @@
 <?php
 
-use React\Stream\Stream;
-use React\EventLoop\Factory;
-use Clue\React\Tar\Decoder;
-use React\Stream\BufferedSink;
 use Clue\Hexdump\Hexdump;
-use React\EventLoop\StreamSelectLoop;
+use Clue\React\Tar\Decoder;
+use React\EventLoop\Factory;
+use React\Stream\ReadableResourceStream;
+use React\Stream\ReadableStreamInterface;
 
 require __DIR__ . '/../vendor/autoload.php';
 
 $in = isset($argv[1]) ? $argv[1] : (__DIR__ . '/../tests/fixtures/alice-bob.tar');
 echo 'Reading file "' . $in . '" (pass as argument to example)' . PHP_EOL;
 
-// using the default loop does *not* work for file I/O
-//$loop = Factory::create();
-$loop = new StreamSelectLoop();
-
-$stream = new Stream(fopen($in, 'r'), $loop);
+$loop = Factory::create();
+$stream = new ReadableResourceStream(fopen($in, 'r'), $loop);
 
 $decoder = new Decoder();
-$decoder->on('entry', function ($header, $file) {
+$decoder->on('entry', function (array $header, ReadableStreamInterface $file) {
     static $i = 0;
     echo 'FILE #' . ++$i . PHP_EOL;
-
 
     echo 'Received entry headers:' . PHP_EOL;
     var_dump($header);
 
-    BufferedSink::createPromise($file)->then(function ($contents) {
+    $contents = '';
+    $file->on('data', function ($chunk) use (&$contents) {
+        $contents .= $chunk;
+    });
+    $file->on('close', function () use (&$contents) {
         echo 'Received entry contents (' . strlen($contents) . ' bytes)' . PHP_EOL;
 
         $d = new Hexdump();
