@@ -23,6 +23,7 @@ class Decoder extends EventEmitter implements WritableStreamInterface
     private $buffer = '';
     private $writable = true;
     private $closing = false;
+    private $paused = false;
     private $streaming = null;
     private $remaining = 0;
     private $padding = 0;
@@ -52,7 +53,7 @@ class Decoder extends EventEmitter implements WritableStreamInterface
 
             // entry still incomplete => wait for next chunk
             if ($this->streaming !== null) {
-                return true;
+                return !$this->paused;
             }
         }
 
@@ -93,6 +94,22 @@ class Decoder extends EventEmitter implements WritableStreamInterface
             $this->remaining = $header['size'];
             $this->padding   = $header['padding'];
 
+            // entry stream is not paused by default - unless explicitly paused
+            // emit "drain" even when entry stream is ready again to support backpressure
+            $that = $this;
+            $paused =& $this->paused;
+            $paused = false;
+            $this->streaming->on('drain', function () use (&$paused, $that) {
+                $paused = false;
+                $that->emit('drain');
+            });
+            $this->streaming->on('close', function () use (&$paused, $that) {
+                if ($paused) {
+                    $paused = false;
+                    $that->emit('drain');
+                }
+            });
+
             $this->emit('entry', array($header, $this->streaming));
 
             if ($this->remaining === 0) {
@@ -104,7 +121,7 @@ class Decoder extends EventEmitter implements WritableStreamInterface
 
             // incomplete entry => do not read next header
             if ($this->streaming !== null) {
-                return true;
+                return !$this->paused;
             }
 
             if ($this->padding !== 0) {
@@ -184,12 +201,17 @@ class Decoder extends EventEmitter implements WritableStreamInterface
         $this->remaining -= $len;
 
         // emit chunk of data
-        $this->streaming->write($data);
+        $ret = $this->streaming->write($data);
 
         // nothing remaining => entry stream finished
         if ($this->remaining === 0) {
             $this->streaming->end();
             $this->streaming = null;
+        }
+
+        // throttle input when streaming entry is still writable but returns false (backpressure)
+        if ($ret === false && $this->streaming !== null && $this->streaming->isWritable()) {
+            $this->paused = true;
         }
 
         return $buffer;

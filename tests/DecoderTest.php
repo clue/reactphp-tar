@@ -131,6 +131,108 @@ class DecoderTest extends TestCase
         $this->assertTrue($ret);
     }
 
+    public function testWriteDataWhenStreamingEntryIsClosedAlreadyWillNotEmitDataAndWillNotThrottleWhenMoreDataIsRemaining()
+    {
+        $entry = new ThroughStream();
+        $entry->close();
+        $entry->on('data', $this->expectCallableNever());
+
+        $ref = new \ReflectionProperty($this->decoder, 'streaming');
+        $ref->setAccessible(true);
+        $ref->setValue($this->decoder, $entry);
+
+        $ref = new \ReflectionProperty($this->decoder, 'remaining');
+        $ref->setAccessible(true);
+        $ref->setValue($this->decoder, 100);
+
+        $ret = $this->decoder->write('hi');
+
+        $this->assertTrue($ret);
+    }
+
+    public function testWriteDataWhenStreamingEntryIsPausedAlreadyWillEmitDataOnEntryAndThrottleWhenMoreDataIsRemaining()
+    {
+        $entry = new ThroughStream();
+        $entry->pause();
+        $entry->on('data', $this->expectCallableOnceWith('hi'));
+        $entry->on('end', $this->expectCallableNever());
+        $entry->on('close', $this->expectCallableNever());
+
+        $ref = new \ReflectionProperty($this->decoder, 'streaming');
+        $ref->setAccessible(true);
+        $ref->setValue($this->decoder, $entry);
+
+        $ref = new \ReflectionProperty($this->decoder, 'remaining');
+        $ref->setAccessible(true);
+        $ref->setValue($this->decoder, 100);
+
+        $ret = $this->decoder->write('hi');
+
+        $this->assertFalse($ret);
+    }
+
+    public function testWriteDataWhenStreamingEntryIsPausedDuringDataWillEmitDataOnEntryAndThrottleWhenMoreDataIsRemaining()
+    {
+        $entry = new ThroughStream();
+        $entry->on('data', function () use ($entry) {
+            $entry->pause();
+        });
+        $entry->on('end', $this->expectCallableNever());
+        $entry->on('close', $this->expectCallableNever());
+
+        $ref = new \ReflectionProperty($this->decoder, 'streaming');
+        $ref->setAccessible(true);
+        $ref->setValue($this->decoder, $entry);
+
+        $ref = new \ReflectionProperty($this->decoder, 'remaining');
+        $ref->setAccessible(true);
+        $ref->setValue($this->decoder, 100);
+
+        $ret = $this->decoder->write('hi');
+
+        $this->assertFalse($ret);
+    }
+
+    public function testWriteDataWhenStreamingEntryIsPausedDuringDataAndResumeEntryAfterwardsWillEmitDrainEventOnDecoder()
+    {
+        $ref = null;
+        $this->decoder->on('entry', function (array $header, ReadableStreamInterface $stream) use (&$ref) {
+            $ref = $stream;
+            $stream->pause();
+        });
+        $this->decoder->on('entry', $this->expectCallableOnce());
+
+        $data = file_get_contents(__DIR__ . '/fixtures/alice-bob.tar', false, null, 0, 512 + 1);
+        $ret = $this->decoder->write($data);
+
+        $this->assertFalse($ret);
+
+        $this->decoder->on('drain', $this->expectCallableOnce());
+
+        $this->assertNotNull($ref);
+        $ref->resume();
+    }
+
+    public function testWriteDataWhenStreamingEntryIsPausedDuringDataAndCloseEntryAfterwardsWillEmitDrainEventOnDecoder()
+    {
+        $ref = null;
+        $this->decoder->on('entry', function (array $header, ReadableStreamInterface $stream) use (&$ref) {
+            $ref = $stream;
+            $stream->pause();
+        });
+        $this->decoder->on('entry', $this->expectCallableOnce());
+
+        $data = file_get_contents(__DIR__ . '/fixtures/alice-bob.tar', false, null, 0, 512 + 1);
+        $ret = $this->decoder->write($data);
+
+        $this->assertFalse($ret);
+
+        $this->decoder->on('drain', $this->expectCallableOnce());
+
+        $this->assertNotNull($ref);
+        $ref->close();
+    }
+
     public function testWriteDataWhenStreamingEntryWillEmitDataOnEntryAndEndAndCloseWhenRemainingDataIsMatched()
     {
         $entry = new ThroughStream();
