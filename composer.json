@@ -2,12 +2,12 @@
     "name": "clue/tar-react",
     "description": "Streaming parser to extract tarballs with ReactPHP.",
     "keywords": ["tar", "archive", "tarball", "untar", "parser", "decoder", "extract", "unpack", "ReactPHP", "async"],
-    "homepage": "https://github.com/clue/php-tar-react",
+    "homepage": "https://github.com/clue/reactphp-tar",
     "license": "MIT",
     "authors": [
         {
             "name": "Christian Lück",
-            "email": "christian@lueck.tv"
+            "email": "christian@clue.engineering"
         }
     ],
     "require": {
