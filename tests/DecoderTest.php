@@ -10,7 +10,10 @@ class DecoderTest extends TestCase
 {
     private $decoder;
 
-    public function setUp()
+    /**
+     * @before
+     */
+    public function setUpDecoder()
     {
         $this->decoder = new Decoder();
     }
