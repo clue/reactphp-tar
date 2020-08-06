@@ -10,7 +10,10 @@ class FunctionDecoderTest extends TestCase
 {
     private $decoder;
 
-    public function setUp()
+    /**
+     * @before
+     */
+    public function setUpDecoderAndLoop()
     {
         $this->decoder = new Decoder();
         $this->loop = Factory::create();
