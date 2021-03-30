@@ -1,4 +1,6 @@
-# clue/reactphp-tar [![Build Status](https://travis-ci.org/clue/reactphp-tar.svg?branch=master)](https://travis-ci.org/clue/reactphp-tar)
+# clue/reactphp-tar
+
+[![CI status](https://github.com/clue/reactphp-tar/workflows/CI/badge.svg)](https://github.com/clue/reactphp-tar/actions)
 
 Streaming parser to extract tarballs with [ReactPHP](https://reactphp.org/).
 
