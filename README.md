@@ -1,4 +1,6 @@
-# clue/reactphp-tar [![Build Status](https://travis-ci.org/clue/reactphp-tar.svg?branch=master)](https://travis-ci.org/clue/reactphp-tar)
+# clue/reactphp-tar
+
+[![CI status](https://github.com/clue/reactphp-tar/workflows/CI/badge.svg)](https://github.com/clue/reactphp-tar/actions)
 
 Streaming parser to extract tarballs with [ReactPHP](https://reactphp.org/).
 
@@ -60,7 +62,7 @@ $ composer require clue/tar-react:^0.2
 See also the [CHANGELOG](CHANGELOG.md) for details about version upgrades.
 
 This project aims to run on any platform and thus does not require any PHP
-extensions and supports running on legacy PHP 5.3 through current PHP 7+.
+extensions and supports running on legacy PHP 5.3 through current PHP 8+.
 It's *highly recommended to use PHP 7+* for this project.
 
 ## Tests
