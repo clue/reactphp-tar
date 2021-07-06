@@ -1,6 +1,7 @@
 # clue/reactphp-tar
 
 [![CI status](https://github.com/clue/reactphp-tar/workflows/CI/badge.svg)](https://github.com/clue/reactphp-tar/actions)
+[![installs on Packagist](https://img.shields.io/packagist/dt/clue/tar-react?color=blue&label=installs%20on%20Packagist)](https://packagist.org/packages/clue/tar-react)
 
 Streaming parser to extract tarballs with [ReactPHP](https://reactphp.org/).
 
