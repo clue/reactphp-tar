@@ -3,7 +3,7 @@
 namespace Clue\Tests\React\Tar;
 
 use Clue\React\Tar\Decoder;
-use React\EventLoop\Factory;
+use React\EventLoop\Loop;
 use React\Stream\ReadableResourceStream;
 
 class FunctionDecoderTest extends TestCase
@@ -16,7 +16,6 @@ class FunctionDecoderTest extends TestCase
     public function setUpDecoderAndLoop()
     {
         $this->decoder = new Decoder();
-        $this->loop = Factory::create();
     }
 
     /**
@@ -28,7 +27,7 @@ class FunctionDecoderTest extends TestCase
 
         $stream->pipe($this->decoder);
 
-        $this->loop->run();
+        Loop::run();
     }
 
     /**
@@ -41,7 +40,7 @@ class FunctionDecoderTest extends TestCase
 
         $stream->pipe($this->decoder);
 
-        $this->loop->run();
+        Loop::run();
     }
 
     public function testStreamingSingleEmptyEmitsSingleEntryWithEmptyStream()
@@ -69,7 +68,7 @@ class FunctionDecoderTest extends TestCase
 
         $stream->pipe($this->decoder);
 
-        $this->loop->run();
+        Loop::run();
     }
 
     public function testCompleteEndSingleEmtpyBehavesSameAsStreaming()
@@ -83,6 +82,6 @@ class FunctionDecoderTest extends TestCase
 
     private function createStream($name, $readChunkSize = null)
     {
-        return new ReadableResourceStream(fopen(__DIR__ . '/fixtures/' . $name, 'r'), $this->loop, $readChunkSize);
+        return new ReadableResourceStream(fopen(__DIR__ . '/fixtures/' . $name, 'r'), null, $readChunkSize);
     }
 }
