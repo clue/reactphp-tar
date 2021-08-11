@@ -27,8 +27,11 @@ Once [installed](#install), you can use the following code to pipe a readable
 tar stream into the `Decoder` which emits "entry" events for each individual file:
 
 ```php
-$loop = React\EventLoop\Factory::create();
-$stream = new ReadableResourceStream(fopen('archive.tar', 'r'), $loop);
+<?php
+
+require __DIR__ . '/vendor/autoload.php';
+
+$stream = new ReadableResourceStream(fopen('archive.tar', 'r'));
 
 $decoder = new Decoder();
 
@@ -42,8 +45,6 @@ $decoder->on('entry', function (array $header, React\Stream\ReadableStreamInterf
 });
 
 $stream->pipe($decoder);
-
-$loop->run();
 ```
 
 See also the [examples](examples).
@@ -78,7 +79,7 @@ $ composer install
 To run the test suite, go to the project root and run:
 
 ```bash
-$ php vendor/bin/phpunit
+$ vendor/bin/phpunit
 ```
 
 ## License

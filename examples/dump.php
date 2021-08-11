@@ -2,7 +2,6 @@
 
 use Clue\Hexdump\Hexdump;
 use Clue\React\Tar\Decoder;
-use React\EventLoop\Factory;
 use React\Stream\ReadableResourceStream;
 use React\Stream\ReadableStreamInterface;
 
@@ -11,8 +10,7 @@ require __DIR__ . '/../vendor/autoload.php';
 $in = isset($argv[1]) ? $argv[1] : (__DIR__ . '/../tests/fixtures/alice-bob.tar');
 echo 'Reading file "' . $in . '" (pass as argument to example)' . PHP_EOL;
 
-$loop = Factory::create();
-$stream = new ReadableResourceStream(fopen($in, 'r'), $loop);
+$stream = new ReadableResourceStream(fopen($in, 'r'));
 
 $decoder = new Decoder();
 $decoder->on('entry', function (array $header, ReadableStreamInterface $file) {
@@ -41,5 +39,3 @@ $decoder->on('close', function() {
 });
 
 $stream->pipe($decoder);
-
-$loop->run();
