@@ -256,10 +256,10 @@ class Decoder extends EventEmitter implements WritableStreamInterface
             throw new RuntimeException('Invalid header checksum, expected "' . $record['checksum'] . '", but calculated "' . $checksum . '" (looks like the archive is corrupted)');
         }
 
-        // padding consits of X NULL bytes after record entry until next BLOCK_SIZE boundary
+        // padding consists of X NULL bytes after record entry until next BLOCK_SIZE boundary
         $record['padding'] = (self::BLOCK_SIZE - ($record['size'] % self::BLOCK_SIZE)) % self::BLOCK_SIZE;
 
-        // filename consits of prefix and name
+        // filename consists of prefix and name
         $record['filename'] = $record['prefix'] . $record['name'];
 
         return $record;

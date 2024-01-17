@@ -1,19 +1,14 @@
 <?php
 
-use Clue\Hexdump\Hexdump;
-use Clue\React\Tar\Decoder;
-use React\Stream\ReadableResourceStream;
-use React\Stream\ReadableStreamInterface;
-
 require __DIR__ . '/../vendor/autoload.php';
 
 $in = isset($argv[1]) ? $argv[1] : (__DIR__ . '/../tests/fixtures/alice-bob.tar');
 echo 'Reading file "' . $in . '" (pass as argument to example)' . PHP_EOL;
 
-$stream = new ReadableResourceStream(fopen($in, 'r'));
+$stream = new React\Stream\ReadableResourceStream(fopen($in, 'r'));
 
-$decoder = new Decoder();
-$decoder->on('entry', function (array $header, ReadableStreamInterface $file) {
+$decoder = new Clue\React\Tar\Decoder();
+$decoder->on('entry', function (array $header, React\Stream\ReadableStreamInterface $file) {
     static $i = 0;
     echo 'FILE #' . ++$i . PHP_EOL;
 
@@ -27,7 +22,7 @@ $decoder->on('entry', function (array $header, ReadableStreamInterface $file) {
     $file->on('close', function () use (&$contents) {
         echo 'Received entry contents (' . strlen($contents) . ' bytes)' . PHP_EOL;
 
-        $d = new Hexdump();
+        $d = new Clue\Hexdump\Hexdump();
         echo $d->dump($contents) . PHP_EOL . PHP_EOL;
     });
 });
