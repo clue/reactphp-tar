@@ -71,7 +71,7 @@ class FunctionDecoderTest extends TestCase
         Loop::run();
     }
 
-    public function testCompleteEndSingleEmtpyBehavesSameAsStreaming()
+    public function testCompleteEndSingleEmptyBehavesSameAsStreaming()
     {
         $this->decoder->on('entry', $this->expectCallableOnce());
         $this->decoder->on('close', $this->expectCallableOnce());

@@ -1,6 +1,6 @@
 # clue/reactphp-tar
 
-[![CI status](https://github.com/clue/reactphp-tar/workflows/CI/badge.svg)](https://github.com/clue/reactphp-tar/actions)
+[![CI status](https://github.com/clue/reactphp-tar/actions/workflows/ci.yml/badge.svg)](https://github.com/clue/reactphp-tar/actions)
 [![installs on Packagist](https://img.shields.io/packagist/dt/clue/tar-react?color=blue&label=installs%20on%20Packagist)](https://packagist.org/packages/clue/tar-react)
 
 Streaming parser to extract tarballs with [ReactPHP](https://reactphp.org/).
@@ -31,9 +31,9 @@ tar stream into the `Decoder` which emits "entry" events for each individual fil
 
 require __DIR__ . '/vendor/autoload.php';
 
-$stream = new ReadableResourceStream(fopen('archive.tar', 'r'));
+$stream = new React\Stream\ReadableResourceStream(fopen('archive.tar', 'r'));
 
-$decoder = new Decoder();
+$decoder = new Clue\React\Tar\Decoder();
 
 $decoder->on('entry', function (array $header, React\Stream\ReadableStreamInterface $file) {
     echo 'File ' . $header['filename'];
@@ -47,39 +47,39 @@ $decoder->on('entry', function (array $header, React\Stream\ReadableStreamInterf
 $stream->pipe($decoder);
 ```
 
-See also the [examples](examples).
+See also the [examples](examples/).
 
 ## Install
 
-The recommended way to install this library is [through Composer](https://getcomposer.org).
+The recommended way to install this library is [through Composer](https://getcomposer.org/).
 [New to Composer?](https://getcomposer.org/doc/00-intro.md)
 
 While in beta, this project does not currently follow [SemVer](https://semver.org/).
 This will install the latest supported version:
 
 ```bash
-$ composer require clue/tar-react:^0.2
+composer require clue/tar-react:^0.2
 ```
 
 See also the [CHANGELOG](CHANGELOG.md) for details about version upgrades.
 
 This project aims to run on any platform and thus does not require any PHP
 extensions and supports running on legacy PHP 5.3 through current PHP 8+.
-It's *highly recommended to use PHP 7+* for this project.
+It's *highly recommended to use the latest supported PHP version* for this project.
 
 ## Tests
 
 To run the test suite, you first need to clone this repo and then install all
-dependencies [through Composer](https://getcomposer.org):
+dependencies [through Composer](https://getcomposer.org/):
 
 ```bash
-$ composer install
+composer install
 ```
 
 To run the test suite, go to the project root and run:
 
 ```bash
-$ vendor/bin/phpunit
+vendor/bin/phpunit
 ```
 
 ## License
