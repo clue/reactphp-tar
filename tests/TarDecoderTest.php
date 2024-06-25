@@ -2,20 +2,20 @@
 
 namespace Clue\Tests\React\Tar;
 
-use Clue\React\Tar\Decoder;
+use Clue\React\Tar\TarDecoder;
 use React\Stream\ThroughStream;
 use React\Stream\ReadableStreamInterface;
 
-class DecoderTest extends TestCase
+class TarDecoderTest extends TestCase
 {
     private $decoder;
 
     /**
      * @before
      */
-    public function setUpDecoder()
+    public function setUpTarDecoder()
     {
-        $this->decoder = new Decoder();
+        $this->decoder = new TarDecoder();
     }
 
     public function testWriteLessDataThanBufferSizeWillNotEmitAnyEvents()

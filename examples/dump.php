@@ -7,7 +7,7 @@ echo 'Reading file "' . $in . '" (pass as argument to example)' . PHP_EOL;
 
 $stream = new React\Stream\ReadableResourceStream(fopen($in, 'r'));
 
-$decoder = new Clue\React\Tar\Decoder();
+$decoder = new Clue\React\Tar\TarDecoder();
 $decoder->on('entry', function (array $header, React\Stream\ReadableStreamInterface $file) {
     static $i = 0;
     echo 'FILE #' . ++$i . PHP_EOL;
