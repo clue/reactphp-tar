@@ -24,7 +24,7 @@ processing one chunk at a time in memory without having to rely on disk I/O.
 ## Quickstart example
 
 Once [installed](#install), you can use the following code to pipe a readable
-tar stream into the `Decoder` which emits "entry" events for each individual file:
+tar stream into the `TarDecoder` which emits "entry" events for each individual file:
 
 ```php
 <?php
@@ -33,7 +33,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 $stream = new React\Stream\ReadableResourceStream(fopen('archive.tar', 'r'));
 
-$decoder = new Clue\React\Tar\Decoder();
+$decoder = new Clue\React\Tar\TarDecoder();
 
 $decoder->on('entry', function (array $header, React\Stream\ReadableStreamInterface $file) {
     echo 'File ' . $header['filename'];

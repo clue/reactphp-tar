@@ -18,7 +18,7 @@ use RuntimeException;
  * @event error(Exception $e)
  * @event close()
  */
-class Decoder extends EventEmitter implements WritableStreamInterface
+class TarDecoder extends EventEmitter implements WritableStreamInterface
 {
     private $buffer = '';
     private $writable = true;

@@ -2,20 +2,20 @@
 
 namespace Clue\Tests\React\Tar;
 
-use Clue\React\Tar\Decoder;
+use Clue\React\Tar\TarDecoder;
 use React\EventLoop\Loop;
 use React\Stream\ReadableResourceStream;
 
-class FunctionDecoderTest extends TestCase
+class FunctionalTarDecoderTest extends TestCase
 {
     private $decoder;
 
     /**
      * @before
      */
-    public function setUpDecoderAndLoop()
+    public function setUpTarDecoderAndLoop()
     {
-        $this->decoder = new Decoder();
+        $this->decoder = new TarDecoder();
     }
 
     /**
