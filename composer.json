@@ -17,7 +17,7 @@
     "require-dev": {
         "clue/hexdump": "~0.2.0",
         "react/event-loop": "^1.2",
-        "phpunit/phpunit": "^9.6 || ^5.7 || ^4.8.36"
+        "phpunit/phpunit": "^9.6 || ^8.5 || ^5.7 || ^4.8.36"
     },
     "autoload": {
         "psr-4": {
