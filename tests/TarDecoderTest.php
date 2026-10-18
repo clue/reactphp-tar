@@ -91,7 +91,9 @@ class TarDecoderTest extends TestCase
         $this->assertTrue($ret);
 
         $ref = new \ReflectionProperty($this->decoder, 'padding');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
 
         $this->assertEquals(512 - 10, $ref->getValue($this->decoder));
     }
@@ -122,11 +124,15 @@ class TarDecoderTest extends TestCase
         $entry->on('close', $this->expectCallableNever());
 
         $ref = new \ReflectionProperty($this->decoder, 'streaming');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
         $ref->setValue($this->decoder, $entry);
 
         $ref = new \ReflectionProperty($this->decoder, 'remaining');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
         $ref->setValue($this->decoder, 100);
 
         $ret = $this->decoder->write('hi');
@@ -141,11 +147,15 @@ class TarDecoderTest extends TestCase
         $entry->on('data', $this->expectCallableNever());
 
         $ref = new \ReflectionProperty($this->decoder, 'streaming');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
         $ref->setValue($this->decoder, $entry);
 
         $ref = new \ReflectionProperty($this->decoder, 'remaining');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
         $ref->setValue($this->decoder, 100);
 
         $ret = $this->decoder->write('hi');
@@ -162,11 +172,15 @@ class TarDecoderTest extends TestCase
         $entry->on('close', $this->expectCallableNever());
 
         $ref = new \ReflectionProperty($this->decoder, 'streaming');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
         $ref->setValue($this->decoder, $entry);
 
         $ref = new \ReflectionProperty($this->decoder, 'remaining');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
         $ref->setValue($this->decoder, 100);
 
         $ret = $this->decoder->write('hi');
@@ -184,11 +198,15 @@ class TarDecoderTest extends TestCase
         $entry->on('close', $this->expectCallableNever());
 
         $ref = new \ReflectionProperty($this->decoder, 'streaming');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
         $ref->setValue($this->decoder, $entry);
 
         $ref = new \ReflectionProperty($this->decoder, 'remaining');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
         $ref->setValue($this->decoder, 100);
 
         $ret = $this->decoder->write('hi');
@@ -244,11 +262,15 @@ class TarDecoderTest extends TestCase
         $entry->on('close', $this->expectCallableOnce());
 
         $ref = new \ReflectionProperty($this->decoder, 'streaming');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
         $ref->setValue($this->decoder, $entry);
 
         $ref = new \ReflectionProperty($this->decoder, 'remaining');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
         $ref->setValue($this->decoder, 2);
 
         $ret = $this->decoder->write('hi');
@@ -259,7 +281,9 @@ class TarDecoderTest extends TestCase
     public function testWriteDataWhenExpectingPaddingWillDiscardPaddingDataWhenMorePaddingIsExpected()
     {
         $ref = new \ReflectionProperty($this->decoder, 'padding');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
         $ref->setValue($this->decoder, 4);
 
         $ret = $this->decoder->write("\x00\x00");
@@ -272,7 +296,9 @@ class TarDecoderTest extends TestCase
     public function testWriteDataWhenExpectingPaddingWillDiscardPaddingDataAndSaveToBufferWhenPaddingIsMatched()
     {
         $ref = new \ReflectionProperty($this->decoder, 'padding');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
         $ref->setValue($this->decoder, 1);
 
         $ret = $this->decoder->write("\x00\x00");
@@ -282,7 +308,9 @@ class TarDecoderTest extends TestCase
         $this->assertEquals(0, $ref->getValue($this->decoder));
 
         $ref = new \ReflectionProperty($this->decoder, 'buffer');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
 
         $this->assertEquals("\x00", $ref->getValue($this->decoder));
     }
@@ -335,7 +363,9 @@ class TarDecoderTest extends TestCase
         $entry->on('close', $this->expectCallableOnce());
 
         $ref = new \ReflectionProperty($this->decoder, 'streaming');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
         $ref->setValue($this->decoder, $entry);
 
         $this->decoder->close();
@@ -362,7 +392,9 @@ class TarDecoderTest extends TestCase
         $entry->on('close', $this->expectCallableOnce());
 
         $ref = new \ReflectionProperty($this->decoder, 'streaming');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
         $ref->setValue($this->decoder, $entry);
 
         $this->decoder->end();
