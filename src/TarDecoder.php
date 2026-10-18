@@ -35,10 +35,12 @@ class TarDecoder extends EventEmitter implements WritableStreamInterface
     {
         $this->format = "Z100name/Z8mode/Z8uid/Z8gid/Z12size/Z12mtime/Z8checksum/Z1type/Z100symlink/Z6magic/Z2version/Z32owner/Z32group/Z8deviceMajor/Z8deviceMinor/Z155prefix/Z12unpacked";
 
+        // @codeCoverageIgnoreStart
         if (PHP_VERSION < 5.5) {
             // PHP 5.5 replaced 'a' with 'Z' (read X bytes and removing trailing NULL bytes)
-            $this->format = str_replace('Z', 'a', $this->format); // @codeCoverageIgnore
+            $this->format = str_replace('Z', 'a', $this->format);
         }
+        // @codeCoverageIgnoreEnd
     }
 
     public function write($data)
